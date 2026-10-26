@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   ChevronLeft,
   Upload,
@@ -19,7 +22,7 @@ import { useApp } from '../context/AppContext';
 import type { Course } from '../types';
 
 export const CreateCourseView: React.FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { createCourse, showToast, setIsCoursePreviewOpen, setTargetCourseForAction } = useApp();
 
   // Form State
@@ -87,7 +90,7 @@ export const CreateCourseView: React.FC = () => {
     if (isDirty) {
       setShowLeaveModal(true);
     } else {
-      navigate('/admin/courses');
+      router.push('/admin/courses');
     }
   };
 
@@ -109,7 +112,7 @@ export const CreateCourseView: React.FC = () => {
       originalPrice: numDiscount,
     });
 
-    navigate(`/admin/course/${newCourse.id}`);
+    router.push(`/admin/courses/${newCourse.id}`);
   };
 
   const handleSaveAndLeave = () => {
@@ -123,7 +126,7 @@ export const CreateCourseView: React.FC = () => {
         level,
       });
     }
-    navigate('/admin/courses');
+    router.push('/admin/courses');
   };
 
   const handleOpenPreview = () => {
@@ -177,7 +180,7 @@ export const CreateCourseView: React.FC = () => {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', lineHeight: '18px', fontWeight: 500, color: 'var(--text-muted, #70737E)' }}>
           <Link
-            to="/admin/courses"
+            href="/admin/courses"
             onClick={(e) => {
               if (isDirty) {
                 e.preventDefault();
@@ -898,7 +901,7 @@ export const CreateCourseView: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setShowLeaveModal(false);
-                  navigate('/admin/courses');
+                  router.push('/admin/courses');
                 }}
                 style={{
                   padding: '8px 14px',

@@ -1,5 +1,7 @@
+'use client';
+
 import React, { createContext, useContext, useState, useMemo, useEffect, type ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import type {
   ActiveTab,
   CourseWorkspaceTab,
@@ -99,12 +101,12 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
 
   // Derive activeTab directly from current URL pathname
   const activeTab = useMemo<ActiveTab>(() => {
-    const path = location.pathname;
+    const path = pathname || '';
     if (path === '/' || path === '/admin' || path.startsWith('/admin/overview') || path.startsWith('/overview')) return 'overview';
     if (path.includes('/add-lesson')) return 'add-lesson';
     if (path.includes('/add-quiz')) return 'add-quiz';
@@ -116,7 +118,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (path.includes('/settings')) return 'settings';
     if (path.includes('/notifications')) return 'notifications';
     return 'overview';
-  }, [location.pathname]);
+  }, [pathname]);
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
@@ -124,7 +126,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Close mobile sidebar on route change
   useEffect(() => {
     setMobileSidebarOpen(false);
-  }, [location.pathname]);
+  }, [pathname]);
   const [courses, setCourses] = useState<Course[]>(initialCourses);
   const [selectedCourseId, setSelectedCourseId] = useState<string>(() => {
     const match = typeof window !== 'undefined' ? window.location.pathname.match(/\/courses\/([^/]+)/) : null;
@@ -137,11 +139,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Sync selectedCourseId when visiting /admin/courses/:courseId directly
   useEffect(() => {
-    const match = location.pathname.match(/\/courses\/([^/]+)/);
+    if (!pathname) return;
+    const match = pathname.match(/\/courses\/([^/]+)/);
     if (match && match[1] && match[1] !== 'add-lesson' && match[1] !== 'add-quiz' && match[1] !== 'new') {
       setSelectedCourseId(match[1]);
     }
-  }, [location.pathname]);
+  }, [pathname]);
   
   // Modals
   const [isCreateCourseOpen, setIsCreateCourseOpen] = useState(false);
@@ -200,14 +203,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       settings: '/admin/settings',
       notifications: '/admin/notifications',
     };
-    navigate(pathMap[tab] || '/admin/overview');
+    router.push(pathMap[tab] || '/admin/overview');
   };
 
   const openCourseWorkspace = (courseId: string, tab: CourseWorkspaceTab = 'overview') => {
     setSelectedCourseId(courseId);
     setWorkspaceTab(tab);
-    navigate(`/admin/courses/${courseId}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push(`/admin/courses/${courseId}`);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const createCourse = (

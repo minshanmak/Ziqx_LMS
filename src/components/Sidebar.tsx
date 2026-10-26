@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import {
   LayoutGrid,
   BookOpen,
@@ -138,7 +140,7 @@ export const Sidebar: React.FC = () => {
           }}
         >
           <Link
-            to="/admin/overview"
+            href="/admin/overview"
             onClick={() => setMobileSidebarOpen(false)}
             style={{
               display: 'flex',
@@ -203,7 +205,7 @@ export const Sidebar: React.FC = () => {
             return (
               <Link
                 key={item.id}
-                to={item.path}
+                href={item.path}
                 onClick={() => setMobileSidebarOpen(false)}
                 title={sidebarCollapsed ? item.label : undefined}
                 style={{
@@ -439,7 +441,7 @@ export const Sidebar: React.FC = () => {
 
               <div style={{ paddingTop: '10px', borderTop: '1px solid var(--border-divider, #ECECEF)', textAlign: 'center' }}>
                 <Link
-                  to="/admin/notifications"
+                  href="/admin/notifications"
                   onClick={() => setIsNotificationsPopoverOpen(false)}
                   style={{
                     fontSize: '13px',
@@ -552,7 +554,7 @@ export const Sidebar: React.FC = () => {
               }}
             >
               <Link
-                to="/admin/settings"
+                href="/admin/settings"
                 onClick={() => setIsProfilePopoverOpen(false)}
                 style={{
                   display: 'flex',
@@ -578,7 +580,7 @@ export const Sidebar: React.FC = () => {
               </Link>
 
               <Link
-                to="/admin/notifications"
+                href="/admin/notifications"
                 onClick={() => setIsProfilePopoverOpen(false)}
                 style={{
                   display: 'flex',

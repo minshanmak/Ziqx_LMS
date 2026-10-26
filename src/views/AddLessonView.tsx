@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { ChevronRight, PlayCircle, EyeOff, Layers, Info } from 'lucide-react';

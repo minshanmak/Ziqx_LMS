@@ -1,10 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+'use client';
+
+import React, { useRef, useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Bell, ChevronDown, Settings as SettingsIcon, LogOut } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
-export const MobileTopBar: React.FC = () => {
-  const location = useLocation();
+const MobileTopBarContent: React.FC = () => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { unreadNotificationsCount, showToast } = useApp();
   const [profileOpen, setProfileOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -21,7 +25,7 @@ export const MobileTopBar: React.FC = () => {
 
   // Determine current title as per Figma screen: "Overview", "Courses", "Learners", etc.
   let pageTitle = 'Overview';
-  const path = location.pathname;
+  const path = pathname || '';
   if (path.includes('/admin/courses') || path.includes('/admin/course/')) {
     pageTitle = 'Courses';
   } else if (path.includes('/admin/learners')) {
@@ -35,7 +39,7 @@ export const MobileTopBar: React.FC = () => {
   }
 
   // In Learner portal full preview mode, hide the top bar
-  if (path.includes('/admin/learner-portal') && location.search.includes('preview=true')) {
+  if (path.includes('/admin/learner-portal') && searchParams?.get('preview') === 'true') {
     return null;
   }
 
@@ -61,7 +65,7 @@ export const MobileTopBar: React.FC = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }} ref={popoverRef}>
         {/* Notifications Icon Button */}
         <Link
-          to="/admin/notifications"
+          href="/admin/notifications"
           aria-label="View notifications"
           style={{
             position: 'relative',
@@ -150,7 +154,7 @@ export const MobileTopBar: React.FC = () => {
             </div>
 
             <Link
-              to="/admin/settings"
+              href="/admin/settings"
               onClick={() => setProfileOpen(false)}
               style={{
                 display: 'flex',
@@ -200,5 +204,13 @@ export const MobileTopBar: React.FC = () => {
         )}
       </div>
     </header>
+  );
+};
+
+export const MobileTopBar: React.FC = () => {
+  return (
+    <Suspense fallback={null}>
+      <MobileTopBarContent />
+    </Suspense>
   );
 };

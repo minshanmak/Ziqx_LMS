@@ -1,17 +1,20 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+'use client';
+
+import React, { Suspense } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { LayoutGrid, BookOpen, Users, Globe, Settings } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import type { ActiveTab } from '../types';
 
-export const MobileBottomNav: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+const MobileBottomNavContent: React.FC = () => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { setActiveTab } = useApp();
 
-  const isPortal = location.pathname.includes('/learner-portal');
+  const isPortal = pathname?.includes('/learner-portal');
   // If in portal full preview, we don't show the admin bottom nav
-  if (isPortal && location.search.includes('preview=true')) {
+  if (isPortal && searchParams?.get('preview') === 'true') {
     return null;
   }
 
@@ -25,15 +28,17 @@ export const MobileBottomNav: React.FC = () => {
 
   const handleNavClick = (item: typeof navItems[0]) => {
     setActiveTab(item.id);
-    navigate(item.path);
+    router.push(item.path);
   };
+
+  const currentPath = pathname || '';
 
   return (
     <nav className="mobile-bottom-nav" aria-label="Mobile Navigation">
       {navItems.map((item) => {
         const isActive =
-          location.pathname.startsWith(item.path) ||
-          (item.id === 'courses' && location.pathname.includes('/course/'));
+          currentPath.startsWith(item.path) ||
+          (item.id === 'courses' && currentPath.includes('/course/'));
 
         return (
           <button
@@ -52,5 +57,13 @@ export const MobileBottomNav: React.FC = () => {
         );
       })}
     </nav>
+  );
+};
+
+export const MobileBottomNav: React.FC = () => {
+  return (
+    <Suspense fallback={null}>
+      <MobileBottomNavContent />
+    </Suspense>
   );
 };

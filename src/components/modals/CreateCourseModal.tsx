@@ -1,17 +1,19 @@
+'use client';
+
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
 
 export const CreateCourseModal: React.FC = () => {
   const { isCreateCourseOpen, setIsCreateCourseOpen } = useApp();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     if (isCreateCourseOpen) {
       setIsCreateCourseOpen(false);
-      navigate('/admin/courses/new');
+      router.push('/admin/courses/new');
     }
-  }, [isCreateCourseOpen, setIsCreateCourseOpen, navigate]);
+  }, [isCreateCourseOpen, setIsCreateCourseOpen, router]);
 
   return null;
 };

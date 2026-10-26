@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 import {
   Plus,
@@ -21,7 +23,7 @@ import { StatusBadge } from '../components/common/StatusBadge';
 import type { Course } from '../types';
 
 export const OverviewView: React.FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const {
     courses,
     setActiveTab,
@@ -162,7 +164,7 @@ export const OverviewView: React.FC = () => {
 
         {/* Primary Action Button - 12px rounded rectangle as per Design System & Figma */}
         <button
-          onClick={() => navigate('/admin/courses/new')}
+          onClick={() => router.push('/admin/courses/new')}
           style={{
             height: '44px',
             padding: '0 18px',

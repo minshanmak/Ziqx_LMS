@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useApp } from '../context/AppContext';
 import {
   Plus,
@@ -15,7 +17,7 @@ import { StatusBadge } from '../components/common/StatusBadge';
 import type { Course } from '../types';
 
 export const CoursesView: React.FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const {
     courses,
     openCourseWorkspace,
@@ -125,7 +127,7 @@ export const CoursesView: React.FC = () => {
         </div>
 
         <button
-          onClick={() => navigate('/admin/courses/new')}
+          onClick={() => router.push('/admin/courses/new')}
           className="btn-primary"
         >
           <Plus size={16} strokeWidth={1.75} />
@@ -242,7 +244,7 @@ export const CoursesView: React.FC = () => {
 
         {/* Create Course Empty Card */}
         <div
-          onClick={() => navigate('/admin/courses/new')}
+          onClick={() => router.push('/admin/courses/new')}
           style={{
             minHeight: '308px',
             borderRadius: 'var(--radius-lg)',
